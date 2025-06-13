@@ -9,9 +9,11 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,8 @@ import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -53,20 +57,29 @@ fun SignUp(){
         modifier = Modifier
             .fillMaxSize()
             .background(AppColors.Background)
+           // .border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
             .padding(16.dp),
     ) {
         Column (
             modifier = Modifier
                 .fillMaxSize()
-            //    .border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+                .border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
             //    .background(AppColors.Placeholder)
             ,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-           Box(){
-               Column {
+           Box(
+               modifier = Modifier
+                   .padding(16.dp)
+                   .background(AppColors.OnError)
+                   //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+           ){
+               Column (
+                   modifier = Modifier
+                       .padding(8.dp)
+                       //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+               ) {
                    val interactionSource = remember { MutableInteractionSource() }
                    val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -86,6 +99,45 @@ fun SignUp(){
                        labelValue = stringResource(id = R.string.password_input),
                        placeHolderValue = stringResource(id = R.string.password_input_placeholder),
                    )
+                   Row (
+                       horizontalArrangement = Arrangement.SpaceBetween
+                   ){
+                       Button(
+                           onClick = {},
+                           modifier = Modifier
+                               .weight(1f)
+                               .padding(8.dp),
+                           shape = RoundedCornerShape(8.dp)
+                       ) {
+                           Text(
+                               text = "Sign Up".uppercase(),
+                               textAlign = TextAlign.Center,
+                               modifier = Modifier
+                                   .padding(16.dp, 8.dp)
+                                   .fillMaxWidth()
+                           )
+                       }
+                       Button(
+                           onClick = {},
+                           modifier = Modifier
+                               .weight(1f)
+                               .padding(8.dp),
+                           shape = RoundedCornerShape(8.dp),
+                           colors = ButtonDefaults.buttonColors(
+                               containerColor = Color.LightGray, // Gray background
+                               contentColor = AppColors.Background // Text color
+                           )
+                       ) {
+                           Text(
+                               text = "Cancel".uppercase(),
+                               textAlign = TextAlign.Center,
+                               color = AppColors.White,
+                               modifier = Modifier
+                                   .padding(16.dp, 8.dp)
+                                   .fillMaxWidth()
+                           )
+                       }
+                   }
                }
            }
         }
@@ -99,7 +151,7 @@ fun CallNormalTextFieldText(NormalText: String){
         fontSize = 16.sp,
         color = AppColors.Error,
         textAlign = TextAlign.Start,
-        modifier = Modifier.padding(start = 8.dp, bottom = 0.dp, top = 8.dp, end = 0.dp)
+        modifier = Modifier.padding(start = 8.dp, bottom = 2.dp, top = 8.dp, end = 0.dp)
     )
 }
 
@@ -140,6 +192,7 @@ fun CallNormalTextField(
         modifier = Modifier
             .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
             .clip(RoundedCornerShape(4.dp))
+            .fillMaxWidth()
     )
 }
 
@@ -177,6 +230,8 @@ fun CallPasswordTextField(labelValue: String, placeHolderValue: String, iconValu
         modifier = Modifier
             .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
             .clip(RoundedCornerShape(4.dp))
+            .fillMaxWidth()
     )
 
 }
+
