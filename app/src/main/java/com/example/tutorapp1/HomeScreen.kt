@@ -22,20 +22,63 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.R.attr.contentDescription
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun HomeScreen(){
+
+    val navController = rememberNavController()
+    var selected by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState(initialPage = selected) // Sync with pager
+    val coroutineScope = rememberCoroutineScope()
+    var isInsideSubpage by remember { mutableStateOf(false) }
+
+    // Track whether to reset Categories navigation
+    var resetCategories by remember { mutableStateOf(false) }
+
+    // Sync selected state when swiping (Avoids extra recompositions)
+    LaunchedEffect(pagerState.currentPage) {
+        selected = pagerState.currentPage
+    }
 
     Scaffold (
         topBar = {
@@ -47,54 +90,247 @@ fun HomeScreen(){
             )
         },
         bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
+           BottomAppBar(selected, navController) { newIndex ->
+               // selected = newIndex
+               coroutineScope.launch {
+                   //   pagerState.animateScrollToPage(newIndex)
+                   pagerState.scrollToPage(newIndex)
+               }
 
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* Navigate to Home */ },
-                    icon = {
-                        Icon(Icons.Filled.Home, contentDescription = "Home")
-                    }
-                )
+               //  Reset Categories when clicking Bottom Navigation
+               if (newIndex == 1) {
+                   resetCategories = true  // Tell CategoriesNavigation to reset
+               }
 
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* do something */ },
-                    icon = {
-                        Icon(Icons.Filled.Create, contentDescription = "Menu")
-                    }
-                )
+//                    if (newIndex == 1) { // When clicking Categories
+//                        navController.navigate(Screen.MainCategories.route) {
+//                            popUpTo(Screen.MainCategories.route) { inclusive = true }
+//                        }
+//                    }
 
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* Navigate to Home */ },
-                    icon = {
-                        Icon(Icons.Filled.Menu, contentDescription = "Home")
-                    }
-                )
+//                    if (newIndex != 1) { // If not on Categories tab
+//                        navController.navigate("mainCategories") {
+//                            popUpTo("mainCategories") { inclusive = true }
+//                        }
+//                    }
 
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* Navigate to Home */ },
-                    icon = {
-                        Icon(Icons.Filled.Person, contentDescription = "Home")
-                    }
-                )
-
-            }
+           }
+//            NavigationBar(
+//                containerColor = MaterialTheme.colorScheme.primary,
+//                contentColor = MaterialTheme.colorScheme.onPrimary,
+//            ) {// NavigationBar
+//                NavigationBarItem(
+//                    selected = true,
+//                    onClick = { /* Navigate to Home */ },
+//                    icon = {
+//                        Icon(Icons.Filled.Home, contentDescription = "Home")
+//                    }
+//                )
+//
+//                NavigationBarItem(
+//                    selected = true,
+//                    onClick = { /* do something */ },
+//                    icon = {
+//                        Icon(Icons.Filled.Create, contentDescription = "Menu")
+//                    }
+//                )
+//
+//                NavigationBarItem(
+//                    selected = true,
+//                    onClick = { /* Navigate to Home */ },
+//                    icon = {
+//                        Icon(Icons.Filled.Menu, contentDescription = "Home")
+//                    }
+//                )
+//
+//                NavigationBarItem(
+//                    selected = true,
+//                    onClick = { /* Navigate to Home */ },
+//                    icon = {
+//                        Icon(Icons.Filled.Person, contentDescription = "Home")
+//                    }
+//                )
+//            } // NavigationBar
         },
     ) {innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            NotesList()
 
+        HorizontalPager(
+            count = 4,
+            state = pagerState,
+            modifier = Modifier.padding(innerPadding),
+            userScrollEnabled = !isInsideSubpage
+        ) {page ->
+            //  selected = page
+            when (page){
+                0 -> LoginScreen()
+                1 -> SignUp()
+                2 -> NotesList()
+                3 -> UserProfile()
+            }
+        }
+
+//        Column(
+//            modifier = Modifier
+//                .padding(innerPadding),
+//            verticalArrangement = Arrangement.spacedBy(16.dp),
+//        ) {
+//            NotesList()
+//
+//        }
+
+    }
+}
+
+
+
+@Composable
+fun BottomAppBar(selected: Int, navController: NavController, onItemSelected: (Int) -> Unit){
+
+    var shouldResetThePage by remember { mutableStateOf(false) }
+
+    NavigationBar(
+        modifier = Modifier
+            .padding(
+                start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp
+            )
+            .graphicsLayer {
+                shape = RoundedCornerShape(
+                    topStart = 12.dp,
+                    topEnd = 12.dp,
+                    bottomEnd = 0.dp,
+                    bottomStart = 0.dp
+                )
+                clip = true
+            },
+         containerColor = LightColorScheme.PrimaryFixed
+
+    ){
+        BottomAppBarItem.forEachIndexed { index, BottomNavItems ->
+            NavigationBarItem(
+                selected = index == selected, // Now properly updates based on `selected`
+                onClick = {
+                    //  onItemSelected(index)
+
+                    if (index == selected && BottomNavItems.route == "categories") {
+                        // Force reset when clicking the same tab again
+                        shouldResetThePage = true
+                    } else {
+                        onItemSelected(index)
+                    }
+                },
+                icon = {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color =
+                                    if (index == selected)
+                                        AppColors.White.copy(alpha = 0.4f)
+                                    else
+                                        Color.Transparent,
+                                shape =
+                                    if (index == selected)
+                                        RoundedCornerShape(
+                                            12.dp
+                                        ) else
+                                        RoundedCornerShape(0.dp)
+                                // Optional: rounded background
+                            )
+
+                            .padding(
+                                start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp
+                            ) // Padding for better appearance)
+
+                    ) {
+                        BadgedBox(
+                            badge = {
+                                if (BottomNavItems.badges != 0) {
+                                    Badge {
+                                        Text(text = BottomNavItems.badges.toString())
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (index == selected)
+                                    BottomNavItems.selectedIcon
+                                else
+                                    BottomNavItems.unselectedIcon,
+                                contentDescription = BottomNavItems.title,
+                                tint = if (index == selected)
+                                    AppColors.Primary
+                                else
+                                    LightColorScheme.Secondary
+                            )
+                        }
+                    }
+
+                },
+                label = {
+                    Text(
+                        text = BottomNavItems.title,
+                        fontWeight = if (index == selected) FontWeight.Bold else FontWeight.Normal,
+                        color = if (index == selected) AppColors.Primary else LightColorScheme.Secondary,
+                        modifier = Modifier
+                            .padding(0.dp),
+                    )
+                },
+                alwaysShowLabel = true,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = AppColors.Primary,
+                    unselectedIconColor = AppColors.White,
+                    selectedTextColor = AppColors.Primary,
+                    unselectedTextColor = AppColors.White,
+                    indicatorColor = Color.Transparent // Properly sets the selection indicator
+                )
+            )
         }
 
     }
 }
+
+
+data class BottomNavItems(
+    val title: String,
+    val route: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val badges: Int
+)
+
+val BottomAppBarItem = listOf(
+    BottomNavItems(
+        title = "Home",
+        route = "home",
+        selectedIcon = Icons.Filled.Home,
+        unselectedIcon = Icons.Outlined.Home,
+        badges = 0,
+    ),
+
+    BottomNavItems(
+        title = "Create",
+        route = "create",
+        selectedIcon = Icons.Filled.Create,
+        unselectedIcon = Icons.Outlined.Create,
+        // selectedIcon = Icons.AutoMirrored.Filled.List,
+        // unselectedIcon = Icons.AutoMirrored.Outlined.List,
+        badges = 0,
+    ),
+
+    BottomNavItems(
+        title = "List",
+        route = "list",
+        selectedIcon = Icons.Filled.List,
+        unselectedIcon = Icons.Outlined.List,
+        badges = 0,
+    ),
+
+    BottomNavItems(
+        title = "Profile",
+        route = "profile",
+        selectedIcon = Icons.Filled.AccountCircle,
+        unselectedIcon = Icons.Outlined.AccountCircle,
+        badges = 0,
+    ),
+
+
+    )

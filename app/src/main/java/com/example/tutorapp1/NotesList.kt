@@ -56,7 +56,7 @@ fun NotesList() {
     Surface(
         modifier = Modifier
             .background(AppColors.Background)
-            .padding(8.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 0.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {

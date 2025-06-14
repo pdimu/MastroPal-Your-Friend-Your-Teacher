@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         //  TEST DB WRITE
         FirebaseDatabase.getInstance().reference
             .child("connection_test")
-            .setValue("Connected! + 9")
+            .setValue("Connected! + 2")
             .addOnSuccessListener {
                 Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
             }
