@@ -2,6 +2,7 @@ package com.example.tutorapp1
 
 import android.R.attr.icon
 import android.R.id.icon
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +49,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 
-@Preview
 @Composable
-fun SignUp(){
+fun SignUp(
+    onSignUpSuccess: (String) -> Unit,
+    onSwitchToLogin: () -> Unit
+){
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
+
+    val emailEntered = remember { mutableStateOf("") }
+    val passwordEntered = remember { mutableStateOf("") }
+
     Surface (
         modifier = Modifier
             .fillMaxSize()
@@ -83,32 +97,104 @@ fun SignUp(){
                    val interactionSource = remember { MutableInteractionSource() }
                    val isFocused by interactionSource.collectIsFocusedAsState()
 
-                   CallNormalTextFieldText(NormalText = "Name")
-                   CallNormalTextField(
-                       //iconValue = Icons.Default.AccountBox,
-                       iconValue = if (isFocused) Icons.Filled.AccountCircle else Icons.Outlined.AccountCircle,
-                       interactionSource = interactionSource,
-                       labelValue = stringResource(id = R.string.user_name_input),
-                       placeHolderValue = stringResource(id = R.string.user_name_input_placeholder),
+                   CallNormalTextFieldText(NormalText = "Email")
+
+                   OutlinedTextField(
+                       value = emailEntered.value,
+                       onValueChange = { emailEntered.value = it },
+                       placeholder = {Text(text = "Enter email")},
+                       colors = OutlinedTextFieldDefaults.colors(
+                           focusedBorderColor = AppColors.TextFieldFocusedBorder,
+                           unfocusedBorderColor = AppColors.TextFieldColorsBorder,
+                           cursorColor = AppColors.TextFieldCursor,
+                           focusedLabelColor = AppColors.TextFieldFocusedBorder,
+                           unfocusedLabelColor = Color.Gray,
+                           focusedPlaceholderColor = AppColors.Placeholder,
+                           unfocusedPlaceholderColor = Color.LightGray
+                       ),
+                       keyboardOptions = KeyboardOptions.Default,
+
+                       leadingIcon = {
+                           Icon(
+                               imageVector = if (isFocused) Icons.Filled.AccountCircle else Icons.Outlined.AccountCircle,
+                               contentDescription = "labelValue"
+                           )
+                       },
+
+                       modifier = Modifier
+                           .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                           .clip(RoundedCornerShape(4.dp))
+                           .fillMaxWidth()
                    )
 
                    CallNormalTextFieldText(NormalText = "Password")
-                   CallPasswordTextField(
-                       iconValue = if (isFocused) Icons.Filled.Lock else Icons.Outlined.Lock,
+
+
+                   OutlinedTextField(
+                       value = passwordEntered.value,
+                       onValueChange = { passwordEntered.value = it },
+                       placeholder = {Text(text = "Enter Password")},
+                       colors = OutlinedTextFieldDefaults.colors(
+                           focusedBorderColor = AppColors.TextFieldFocusedBorder,
+                           unfocusedBorderColor = AppColors.TextFieldColorsBorder,
+                           cursorColor = AppColors.TextFieldCursor,
+                           focusedLabelColor = AppColors.TextFieldFocusedBorder,
+                           unfocusedLabelColor = Color.Gray,
+                           focusedPlaceholderColor = AppColors.Placeholder,
+                           unfocusedPlaceholderColor = Color.LightGray
+                       ),
+                       visualTransformation = PasswordVisualTransformation(),
+                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+
+                       leadingIcon = {
+                           Icon(
+                               imageVector = if (isFocused) Icons.Filled.Lock else Icons.Outlined.Lock,
+                               contentDescription = ""
+                           )
+                       },
                        interactionSource = interactionSource,
-                       labelValue = stringResource(id = R.string.password_input),
-                       placeHolderValue = stringResource(id = R.string.password_input_placeholder),
+
+                       modifier = Modifier
+                           .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                           .clip(RoundedCornerShape(4.dp))
+                           .fillMaxWidth()
                    )
+
                    Row (
                        horizontalArrangement = Arrangement.SpaceBetween
                    ){
                        Button(
-                           onClick = {},
+                           onClick = {
+                               val email = emailEntered.value.trim()
+                               val password = passwordEntered.value.trim()
+
+                               if(email.isNotEmpty() && password.isNotEmpty()) {
+                                   auth.createUserWithEmailAndPassword(email, password)
+                                       .addOnCompleteListener { task ->
+                                           if (task.isSuccessful) {
+                                               val uid = auth.currentUser?.uid ?: ""
+                                               FirebaseDatabase.getInstance().reference
+                                                   .child("Users")
+                                                   .child(uid)
+                                                   .setValue(mapOf("email" to email))
+                                               onSignUpSuccess(email)
+                                           } else {
+                                               Toast.makeText(context, task.exception?.message ?: "Error occurred", Toast.LENGTH_SHORT).show()
+                                           }
+                                       }
+                               } else {
+                                   Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                               }
+                           },
                            modifier = Modifier
                                .weight(1f)
                                .padding(8.dp),
-                           shape = RoundedCornerShape(8.dp)
-                       ) {
+                           shape = RoundedCornerShape(8.dp),
+                           colors = ButtonDefaults.buttonColors(
+                               containerColor = AppColors.Primary, // Gray background
+                               contentColor = AppColors.Background // Text color
+                           )
+                       ){
                            Text(
                                text = "Sign Up".uppercase(),
                                textAlign = TextAlign.Center,
@@ -138,6 +224,10 @@ fun SignUp(){
                            )
                        }
                    }
+
+                   TextButton(onClick = onSwitchToLogin) {
+                       Text("Already have an account? Login")
+                   }
                }
            }
         }
@@ -155,6 +245,15 @@ fun CallNormalTextFieldText(NormalText: String){
     )
 }
 
+//
+//CallNormalTextField(
+////iconValue = Icons.Default.AccountBox,
+//iconValue = if (isFocused) Icons.Filled.AccountCircle else Icons.Outlined.AccountCircle,
+//interactionSource = interactionSource,
+//labelValue = stringResource(id = R.string.user_name_input),
+//placeHolderValue = stringResource(id = R.string.user_name_input_placeholder),
+//)
+
 @Composable
 fun CallNormalTextField(
     iconValue: ImageVector,
@@ -163,12 +262,13 @@ fun CallNormalTextField(
     interactionSource: MutableInteractionSource
     ){
 
-    val textValue = remember { mutableStateOf("") }
+    val emailEntered = remember { mutableStateOf("") }
+
     val interactionSource = remember { MutableInteractionSource() }
 
     OutlinedTextField(
-        value = textValue.value,
-        onValueChange = { textValue.value = it },
+        value = emailEntered.value,
+        onValueChange = { emailEntered.value = it },
 //        label = {Text(text = labelValue)},
         placeholder = {Text(text = placeHolderValue)},
         colors = OutlinedTextFieldDefaults.colors(
@@ -196,15 +296,23 @@ fun CallNormalTextField(
     )
 }
 
+//
+//CallPasswordTextField(
+//iconValue = if (isFocused) Icons.Filled.Lock else Icons.Outlined.Lock,
+//interactionSource = interactionSource,
+//labelValue = stringResource(id = R.string.password_input),
+//placeHolderValue = stringResource(id = R.string.password_input_placeholder),
+//)
+
 @Composable
 fun CallPasswordTextField(labelValue: String, placeHolderValue: String, iconValue: ImageVector, interactionSource: MutableInteractionSource){
 
-    val passValue = remember { mutableStateOf("") }
+    val passwordEntered = remember { mutableStateOf("") }
     val interactionSource = remember { MutableInteractionSource() }
 
     OutlinedTextField(
-        value = passValue.value,
-        onValueChange = { passValue.value = it },
+        value = passwordEntered.value,
+        onValueChange = { passwordEntered.value = it },
 //        label = {Text(text = labelValue)},
         placeholder = {Text(text = placeHolderValue)},
         colors = OutlinedTextFieldDefaults.colors(

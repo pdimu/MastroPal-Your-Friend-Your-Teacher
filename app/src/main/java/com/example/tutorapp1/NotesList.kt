@@ -45,14 +45,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 
-@Preview()
 @Composable
-fun NotesList() {
+fun NotesList(
+    userName: String,
+    onLogout: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .background(AppColors.Background)
@@ -68,7 +71,7 @@ fun NotesList() {
         val context = LocalContext.current
         var expanded by remember { mutableStateOf(false) }
         val NotesEntered = remember { mutableStateOf("") }
-        val notesRef = database.getReference("Notes List")
+        val notesRef = database.getReference("Notes List").child(userName)
 
         val notesList = remember { mutableStateListOf<String>() }
 
@@ -102,10 +105,18 @@ fun NotesList() {
                         // .clip(RoundedCornerShape(0.dp))
                         .fillMaxWidth()
                 ) {
+                    Button(onClick = {
+                        FirebaseAuth.getInstance().signOut()
+                        Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                        onLogout() // ✅ notify MainActivity
+                    }) {
+                        Text("Logout")
+                    }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
+
                         Text(
                             text = "Card",
                             modifier = Modifier

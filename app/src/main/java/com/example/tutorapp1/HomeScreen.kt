@@ -1,6 +1,6 @@
 package com.example.tutorapp1
 
-import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,10 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.R.attr.contentDescription
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Create
@@ -35,12 +39,14 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -162,9 +168,21 @@ fun HomeScreen(){
         ) {page ->
             //  selected = page
             when (page){
-                0 -> LoginScreen()
-                1 -> SignUp()
-                2 -> NotesList()
+                0 -> SignUp(onSignUpSuccess = { },
+                    onSwitchToLogin = {  })
+//                0 -> Column (
+//                    verticalArrangement = Arrangement.SpaceEvenly
+//                ){
+//                    UserProfile()
+//                    NotesList()
+//                }
+                1 -> NotesList(
+                    userName = "demo_user",
+                    onLogout = {
+                        selected = 0 // Back to home on logout
+                    }
+                )
+                2 -> SearchScreen()
                 3 -> UserProfile()
             }
         }
@@ -208,16 +226,13 @@ fun BottomAppBar(selected: Int, navController: NavController, onItemSelected: (I
         BottomAppBarItem.forEachIndexed { index, BottomNavItems ->
             NavigationBarItem(
                 selected = index == selected, // Now properly updates based on `selected`
-                onClick = {
-                    //  onItemSelected(index)
-
-                    if (index == selected && BottomNavItems.route == "categories") {
-                        // Force reset when clicking the same tab again
-                        shouldResetThePage = true
-                    } else {
-                        onItemSelected(index)
-                    }
-                },
+                    onClick = {
+                        if (index == selected && BottomNavItems.route == "list") {
+                            shouldResetThePage = true
+                        } else {
+                            onItemSelected(index)  // ✅ This triggers the pager change in HomeScreen
+                        }
+                    },
                 icon = {
                     Box(
                         modifier = Modifier
@@ -307,20 +322,21 @@ val BottomAppBarItem = listOf(
     ),
 
     BottomNavItems(
-        title = "Create",
-        route = "create",
-        selectedIcon = Icons.Filled.Create,
-        unselectedIcon = Icons.Outlined.Create,
-        // selectedIcon = Icons.AutoMirrored.Filled.List,
-        // unselectedIcon = Icons.AutoMirrored.Outlined.List,
+        title = "List",
+        route = "list",
+        selectedIcon = Icons.Filled.List,
+       // selectedIcon = Icons.AutoMirrored.Filled.List,
+        unselectedIcon = Icons.Outlined.List,
         badges = 0,
     ),
 
     BottomNavItems(
-        title = "List",
-        route = "list",
-        selectedIcon = Icons.Filled.List,
-        unselectedIcon = Icons.Outlined.List,
+        title = "Search",
+        route = "search",
+        selectedIcon = Icons.Filled.Search,
+        unselectedIcon = Icons.Outlined.Search,
+        // selectedIcon = Icons.AutoMirrored.Filled.List,
+        // unselectedIcon = Icons.AutoMirrored.Outlined.List,
         badges = 0,
     ),
 

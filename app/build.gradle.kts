@@ -53,6 +53,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -66,35 +70,44 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     //M3
     implementation(libs.material3)
-
     //firebase
     implementation(libs.firebase.database)
 //    implementation("androidx.core:core-splashscreen:1.0.0")
 //    implementation("androidx.compose.material3:material3:1.0.0")
-
     // compose Navigation
     implementation(libs.androidx.navigation.compose)
-
     // Core KTX
     implementation(libs.androidx.core.ktx)
-
     // Fragment + Dynamic Features
     implementation(libs.androidx.fragment.ktx)
-
     // Material Icons (Extended)
     implementation(libs.androidx.material.icons.extended)
-
     // Accompanist Pager
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
-
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)
-
     // Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
 
+    // Firebase Auth
+    implementation(libs.firebase.auth.ktx)
+    // Firebase BOM (ensures compatible versions)
+    implementation(platform(libs.firebase.bom))
+    // Firebase Auth
+    implementation(libs.google.firebase.auth.ktx)
+    // Already using Realtime DB, keep this too
+    implementation(libs.firebase.database.ktx)
+
+    //Accompanist Pager Dependency (rememberPagerState)
+    implementation (libs.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
+
+    implementation (libs.firebase.auth)
+    implementation (libs.androidx.credentials)
+    implementation (libs.androidx.credentials.play.services.auth)
+    implementation (libs.googleid)
 }

@@ -16,12 +16,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.tutorapp1.ui.theme.TutorApp1Theme
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +39,7 @@ class MainActivity : ComponentActivity() {
         //  TEST DB WRITE
         FirebaseDatabase.getInstance().reference
             .child("connection_test")
-            .setValue("Connected! + 2")
+            .setValue("Connected! + 14")
             .addOnSuccessListener {
                 Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
             }
@@ -42,10 +47,41 @@ class MainActivity : ComponentActivity() {
                 Log.e("FirebaseCheck", "❌ Firebase write failed: ${it.message}")
             }
 
+        val auth = FirebaseAuth.getInstance()
+        Log.d("AUTH_CHECK", "Current user: ${auth.currentUser?.email}")
+
+
         enableEdgeToEdge()
         setContent {
+            var loggedInUid by remember { mutableStateOf<String?>(null) }
+            var showSignUp by remember { mutableStateOf(true) }
+
             TutorApp1Theme {
-                HomeScreen()
+
+                when {
+                    loggedInUid != null -> {
+                        NotesList(
+                            userName = loggedInUid!!,
+                            onLogout = { loggedInUid = null }
+                        )
+                    }
+
+                    showSignUp -> {
+                        SignUp(
+                            onSignUpSuccess = { uid -> loggedInUid = uid },
+                            onSwitchToLogin = { showSignUp = false }
+                        )
+                    }
+
+                    else -> {
+                        LoginScreen(
+                            onLoginSuccess = { uid -> loggedInUid = uid },
+                            onSwitchToSignUp = { showSignUp = true }
+                        )
+                    }
+                }
+
+               // HomeScreen()
 
 //                Scaffold(
 //                    topBar = {

@@ -1,6 +1,8 @@
 package com.example.tutorapp1
 
 import android.text.style.UnderlineSpan
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,18 +49,28 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
 
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import com.google.firebase.auth.FirebaseAuth
 
-@Preview
+
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginSuccess: (String) -> Unit,
+    onSwitchToSignUp: () -> Unit
+) {
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
+    val emailEntered = remember { mutableStateOf("") }
+    val passwordEntered = remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent), // Background of the screen
         contentAlignment = Alignment.Center
-    ) {
+    ) {// Box 1
         Box(
             modifier = Modifier
                 .padding(24.dp)
@@ -73,7 +85,7 @@ fun LoginScreen() {
                     color = Color(0xFFBFFFA6),
                     shape = RoundedCornerShape(16.dp)
                 )
-        ) {
+        ) {// Box 2
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,14 +125,11 @@ fun LoginScreen() {
                             modifier = Modifier.padding(12.dp)
                         )
 
-                        val username = remember { mutableStateOf("") }
-                        val password = remember { mutableStateOf("") }
-
                         OutlinedTextField(
-                            value = username.value,
-                            onValueChange = { username.value = it },
-                            label = { Text("User Name") },
-                            placeholder = { Text("Enter User Name") },
+                            value = emailEntered.value,
+                            onValueChange = { emailEntered.value = it },
+                            label = { Text("Email") },
+                            placeholder = { Text("Enter Email") },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AppColors.TextFieldFocusedBorder,
 //                            unfocusedBorderColor = AppColors.TextFieldColorsBorder,
@@ -137,8 +146,8 @@ fun LoginScreen() {
                         )
 
                         OutlinedTextField(
-                            value = password.value, // Access the value of the state
-                            onValueChange = { password.value = it }, // Update the state correctly
+                            value = passwordEntered.value, // Access the value of the state
+                            onValueChange = { passwordEntered.value = it }, // Update the state correctly
                             label = { Text(text = "Password") },
                             visualTransformation = PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -155,7 +164,32 @@ fun LoginScreen() {
 //                        horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Button(
-                                onClick = { /* Login action */ },
+                                onClick = {
+                                    val email = emailEntered.value.trim()
+                                    val password = passwordEntered.value.trim()
+
+                                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                                        Log.d("LOGIN_ATTEMPT", "Trying login with: $email")
+
+                                        auth.signInWithEmailAndPassword(email, password)
+                                            .addOnCompleteListener { task ->
+                                                if (task.isSuccessful) {
+                                                    val uid = auth.currentUser?.uid
+                                                    Log.d("LOGIN_SUCCESS", "Login success! UID: $uid")
+                                                    Toast.makeText(context, "Login Success!", Toast.LENGTH_SHORT).show()
+                                                    onLoginSuccess(uid ?: "")
+                                                } else {
+                                                    val error = task.exception
+                                                    Log.e("LOGIN_FAILED", "Login failed: ${error?.message}", error)
+                                                    Toast.makeText(context, "Login failed: ${error?.localizedMessage ?: "Unknown error"}", Toast.LENGTH_LONG).show()
+                                                }
+
+                                            }
+                                    }
+                                    else {
+                                        Toast.makeText(context, "Email and password can't be empty", Toast.LENGTH_SHORT).show()
+                                    }
+                                },
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(8.dp),
@@ -179,7 +213,7 @@ fun LoginScreen() {
                                     .padding(8.dp),
                                 shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Transparent, // Gray background
+                                    containerColor = AppColors.Placeholder, // Gray background
                                     contentColor = AppColors.Background // Text color
                                 )
                             ) {
@@ -236,7 +270,7 @@ fun LoginScreen() {
                         )
 
                         TextButton(
-                            onClick = {/*Sign Up Page Nav*/},
+                            onClick = {onSwitchToSignUp()},
                             modifier = Modifier
                                 .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
                             ) {
@@ -248,8 +282,8 @@ fun LoginScreen() {
                     }
                 }
             }
-        }
-    }
+        } // Box 2
+    } // Box 1
 }
 
 
