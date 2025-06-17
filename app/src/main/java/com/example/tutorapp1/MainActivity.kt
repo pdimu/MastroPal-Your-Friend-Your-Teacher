@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         //  TEST DB WRITE
         FirebaseDatabase.getInstance().reference
             .child("connection_test")
-            .setValue("Connected! + 14")
+            .setValue("Connected! + 16")
             .addOnSuccessListener {
                 Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
             }
@@ -55,6 +55,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             var loggedInUid by remember { mutableStateOf<String?>(null) }
             var showSignUp by remember { mutableStateOf(true) }
+            var loggedInEmail by remember { mutableStateOf<String?>(null) }
+
 
             TutorApp1Theme {
 
@@ -62,6 +64,7 @@ class MainActivity : ComponentActivity() {
                     loggedInUid != null -> {
                         HomeScreen(
                             userId = loggedInUid!!,
+                            userEmail = loggedInEmail!!,
                             onLogout = {
                                 loggedInUid = null
                                 showSignUp = false
@@ -73,20 +76,41 @@ class MainActivity : ComponentActivity() {
 //                            onLogout = { loggedInUid = null }
 //                        )
                     }
-
                     showSignUp -> {
                         SignUp(
-                            onSignUpSuccess = { uid -> loggedInUid = uid },
+                            onSignUpSuccess = { uid ->
+                                val user = FirebaseAuth.getInstance().currentUser
+                                loggedInUid = uid
+                                loggedInEmail = user?.email
+                            },
                             onSwitchToLogin = { showSignUp = false }
                         )
                     }
-
                     else -> {
                         LoginScreen(
-                            onLoginSuccess = { uid -> loggedInUid = uid },
+                            onLoginSuccess = { uid ->
+                                val user = FirebaseAuth.getInstance().currentUser
+                                loggedInUid = uid
+                                loggedInEmail = user?.email
+                            },
                             onSwitchToSignUp = { showSignUp = true }
                         )
                     }
+
+//                    showSignUp -> {
+//                        SignUp(
+//                            onSignUpSuccess = { uid -> loggedInUid = uid },
+//                            onSwitchToLogin = { showSignUp = false }
+//
+//                        )
+//                    }
+//
+//                    else -> {
+//                        LoginScreen(
+//                            onLoginSuccess = { uid -> loggedInUid = uid },
+//                            onSwitchToSignUp = { showSignUp = true }
+//                        )
+//                    }
                 }
 
                // HomeScreen()

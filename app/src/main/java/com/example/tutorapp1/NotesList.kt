@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -75,9 +76,8 @@ fun NotesList(
 
         val notesList = remember { mutableStateListOf<String>() }
 
-        // Listen to Firebase data changes
-        LaunchedEffect(Unit) {
-            notesRef.addValueEventListener(object : ValueEventListener {
+        DisposableEffect(userName) {
+            val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     notesList.clear()
                     snapshot.children.forEach { child ->
@@ -89,142 +89,184 @@ fun NotesList(
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(context, "Error loading notes", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+            notesRef.addValueEventListener(listener)
+
+            onDispose {
+                notesRef.removeEventListener(listener)
+            }
         }
 
-        Box(
-            modifier = Modifier
-                //.background(AppColors.Primary)
-                .padding(8.dp)
-        ) {
-            Column {
-                Card(
-                    modifier = Modifier
-                        .background(AppColors.Surface)
-                        .padding(8.dp)
-                        // .clip(RoundedCornerShape(0.dp))
-                        .fillMaxWidth()
-                ) {
-                    Button(onClick = {
-                        FirebaseAuth.getInstance().signOut()
-                        Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
-                        onLogout() // ✅ notify MainActivity
-                    }) {
-                        Text("Logout")
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
+        // Listen to Firebase data changes
+//        LaunchedEffect(Unit) {
+//            notesRef.addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    notesList.clear()
+//                    snapshot.children.forEach { child ->
+//                        val note = child.getValue(String::class.java)
+//                        note?.let { notesList.add(it) }
+//                    }
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    Toast.makeText(context, "Error loading notes", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+//        }
 
-                        Text(
-                            text = "Card",
+        Surface(
+            modifier = Modifier
+                .background(AppColors.Background)
+                .padding(8.dp)
+                .fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    //.background(AppColors.Primary)
+                    .padding(8.dp)
+            ) {
+                Column {
+                    Card(
+                        modifier = Modifier
+                            .background(AppColors.Surface)
+                            .padding(8.dp)
+                            // .clip(RoundedCornerShape(0.dp))
+                            .fillMaxWidth()
+                    ) {
+                        Button(onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                            onLogout() // ✅ notify MainActivity
+                        }) {
+                            Text("Logout")
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+
+                            Text(
+                                text = "Card",
+                                modifier = Modifier
+                                    //   .background(AppColors.Primary)
+                                    .padding(8.dp)
+                                    // .clip(RoundedCornerShape(8.dp))
+                                    .weight(1f)
+                            )
+
+                            Box {
+                                IconButton(
+                                    onClick = { expanded = true }
+                                ) {
+                                    Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                                }
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Edit") },
+                                        onClick = {
+                                            Toast.makeText(context, "Load", Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Delete") },
+                                        onClick = {
+                                            Toast.makeText(context, "Save", Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        OutlinedTextField(
+                            value = NotesEntered.value,
+                            onValueChange = { NewNotesEntered ->
+                                NotesEntered.value = NewNotesEntered
+                            },
+                            label = { Text(text = "Enter your notes") },
                             modifier = Modifier
-                                //   .background(AppColors.Primary)
-                                .padding(8.dp)
-                                // .clip(RoundedCornerShape(8.dp))
-                                .weight(1f)
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .fillMaxWidth()
+                                .heightIn(min = 56.dp), // Ensures at least 2 lines visible
+                            minLines = 2,
+                            maxLines = Int.MAX_VALUE // Expands as content grows
                         )
 
-                        Box {
-                            IconButton(
-                                onClick = { expanded = true }
-                            ) {
-                                Icon(Icons.Filled.MoreVert, contentDescription = "More")
-                            }
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("Edit") },
-                                    onClick = {
-                                        Toast.makeText(context, "Load", Toast.LENGTH_SHORT).show()
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("Delete") },
-                                    onClick = {
-                                        Toast.makeText(context, "Save", Toast.LENGTH_SHORT).show()
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    OutlinedTextField(
-                        value = NotesEntered.value,
-                        onValueChange = { NewNotesEntered -> NotesEntered.value = NewNotesEntered },
-                        label = { Text(text = "Enter your notes") },
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .fillMaxWidth()
-                            .heightIn(min = 56.dp), // Ensures at least 2 lines visible
-                        minLines = 2,
-                        maxLines = Int.MAX_VALUE // Expands as content grows
-                    )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(top = 4.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
-                            .fillMaxWidth()
-                    )
-                    {
-                        Button(
-                            onClick = {
-                                //   val notesRef = database.reference.child("Notes List")
-                                //val notes = notesRef.child(NotesEntered)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                                .fillMaxWidth()
+                        )
+                        {
+                            Button(
+                                onClick = {
+                                    //   val notesRef = database.reference.child("Notes List")
+                                    //val notes = notesRef.child(NotesEntered)
 //                                notesRef.setValue(NotesEntered.value)
-                                notesRef.push().setValue(NotesEntered.value)
+                                    notesRef.push().setValue(NotesEntered.value)
 
-                                NotesEntered.value = ""
-                                Toast.makeText(context, "Notes Saved", Toast.LENGTH_LONG).show()
+                                    NotesEntered.value = ""
+                                    Toast.makeText(context, "Notes Saved", Toast.LENGTH_LONG).show()
+                                }
+                            ) {
+                                Text(
+                                    text = "Submit",
+                                )
                             }
-                        ) {
-                            Text(
-                                text = "Submit",
-                            )
                         }
                     }
-                }
 
-                // UI
+                    // UI
                     notesList.forEach { note ->
-                        Box (
+                        Box(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .background(Color(0xFFE8E8E8))
-                        ){
+                        ) {
                             Column {
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 8.dp, bottom = 0.dp, start = 8.dp, end = 8.dp)
+                                        .padding(
+                                            top = 8.dp,
+                                            bottom = 0.dp,
+                                            start = 8.dp,
+                                            end = 8.dp
+                                        )
                                         .clip(RoundedCornerShape(4.dp)),
-                                       // .background(AppColors.Surface)
-                                            colors = CardDefaults.cardColors(
-                                                //containerColor = AppColors.Surface
-                                                containerColor = (Color(0xFFF8F8F8))
-                                            ) // Override default
+                                    // .background(AppColors.Surface)
+                                    colors = CardDefaults.cardColors(
+                                        //containerColor = AppColors.Surface
+                                        containerColor = (Color(0xFFF8F8F8))
+                                    ) // Override default
                                 ) {
                                     Text(
                                         text = note,
                                         modifier = Modifier
                                             .padding(16.dp)
-                                          //  .background(AppColors.Surface)
+                                        //  .background(AppColors.Surface)
                                     )
                                 }
 
-                                Row (
+                                Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Absolute.SpaceBetween,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                                        .padding(
+                                            top = 0.dp,
+                                            bottom = 8.dp,
+                                            start = 8.dp,
+                                            end = 8.dp
+                                        )
                                 ) {
                                     Text(
                                         text = "note id",
@@ -242,6 +284,7 @@ fun NotesList(
                             }
                         }
                     }
+                }
             }
         }
     }

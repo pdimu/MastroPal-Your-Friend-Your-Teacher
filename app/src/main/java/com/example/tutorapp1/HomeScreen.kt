@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     userId: String,
+    userEmail: String,
     onLogout: () -> Unit
 ){
 
@@ -164,7 +165,7 @@ fun HomeScreen(
 
         floatingActionButton = {
             // ✅ Conditionally show FAB only on certain pages if needed
-            if (selected == 1) {  // For example: show only on Notes page
+            if (selected == 0 || selected == 1) {
                 CreateButton {
                     // ✅ Define FAB click behavior here
                     Log.d("FAB_ACTION", "Floating Action Button Clicked")
@@ -172,6 +173,16 @@ fun HomeScreen(
                 }
             }
         }
+
+//        val isFabVisible = selected == 1 || selected == 0
+//    floatingActionButton = {
+//        if (isFabVisible) {
+//            CreateButton {
+//                Log.d("FAB_ACTION", "Floating Action Button Clicked")
+//            }
+//        }
+//    }
+
 
     ) {innerPadding ->
         HorizontalPager(
@@ -187,7 +198,7 @@ fun HomeScreen(
                 0 -> Column (
                     verticalArrangement = Arrangement.SpaceEvenly
                 ){
-                    UserProfile()
+                    UserProfile(userEmail = userEmail)
                     NotesList(
                         userName = userId,
                         onLogout = { onLogout() }
@@ -198,7 +209,7 @@ fun HomeScreen(
                     onLogout = { onLogout() }
                 )
                 2 -> SearchScreen()
-                3 -> UserProfile()
+                3 -> UserProfile(userEmail = userEmail)
             }
         }
 
