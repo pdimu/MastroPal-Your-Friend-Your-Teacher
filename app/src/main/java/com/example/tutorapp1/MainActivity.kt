@@ -60,10 +60,18 @@ class MainActivity : ComponentActivity() {
 
                 when {
                     loggedInUid != null -> {
-                        NotesList(
-                            userName = loggedInUid!!,
-                            onLogout = { loggedInUid = null }
+                        HomeScreen(
+                            userId = loggedInUid!!,
+                            onLogout = {
+                                loggedInUid = null
+                                showSignUp = false
+                            }
                         )
+
+//                        NotesList(
+//                            userName = loggedInUid!!,
+//                            onLogout = { loggedInUid = null }
+//                        )
                     }
 
                     showSignUp -> {

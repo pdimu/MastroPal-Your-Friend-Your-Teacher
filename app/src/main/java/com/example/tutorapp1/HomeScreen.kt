@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.R.attr.contentDescription
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 
@@ -68,9 +69,11 @@ import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    userId: String,
+    onLogout: () -> Unit
+){
 
     val navController = rememberNavController()
     var selected by remember { mutableStateOf(0) }
@@ -158,8 +161,19 @@ fun HomeScreen(){
 //                )
 //            } // NavigationBar
         },
-    ) {innerPadding ->
 
+        floatingActionButton = {
+            // ✅ Conditionally show FAB only on certain pages if needed
+            if (selected == 1) {  // For example: show only on Notes page
+                CreateButton {
+                    // ✅ Define FAB click behavior here
+                    Log.d("FAB_ACTION", "Floating Action Button Clicked")
+                    // You can also trigger navigation or open a dialog here
+                }
+            }
+        }
+
+    ) {innerPadding ->
         HorizontalPager(
             count = 4,
             state = pagerState,
@@ -168,19 +182,20 @@ fun HomeScreen(){
         ) {page ->
             //  selected = page
             when (page){
-                0 -> SignUp(onSignUpSuccess = { },
-                    onSwitchToLogin = {  })
-//                0 -> Column (
-//                    verticalArrangement = Arrangement.SpaceEvenly
-//                ){
-//                    UserProfile()
-//                    NotesList()
-//                }
+//                0 -> SignUp(onSignUpSuccess = { },
+//                    onSwitchToLogin = {  })
+                0 -> Column (
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ){
+                    UserProfile()
+                    NotesList(
+                        userName = userId,
+                        onLogout = { onLogout() }
+                    )
+                }
                 1 -> NotesList(
-                    userName = "demo_user",
-                    onLogout = {
-                        selected = 0 // Back to home on logout
-                    }
+                    userName = userId,
+                    onLogout = { onLogout() }
                 )
                 2 -> SearchScreen()
                 3 -> UserProfile()
@@ -200,6 +215,14 @@ fun HomeScreen(){
 }
 
 
+@Composable
+fun CreateButton(onClick: () -> Unit){
+    FloatingActionButton(
+        onClick = { onClick() }
+    ) {
+        Icon(Icons.Filled.Create, "")
+    }
+}
 
 @Composable
 fun BottomAppBar(selected: Int, navController: NavController, onItemSelected: (Int) -> Unit){
