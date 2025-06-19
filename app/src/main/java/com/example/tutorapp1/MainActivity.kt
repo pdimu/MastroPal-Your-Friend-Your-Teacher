@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         //  TEST DB WRITE
         FirebaseDatabase.getInstance().reference
             .child("connection_test")
-            .setValue("Connected! + 16")
+            .setValue("Connected! + 1")
             .addOnSuccessListener {
                 Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
             }
@@ -54,12 +54,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             var loggedInUid by remember { mutableStateOf<String?>(null) }
-            var showSignUp by remember { mutableStateOf(true) }
+            var showSignUp by remember { mutableStateOf(false) }
             var loggedInEmail by remember { mutableStateOf<String?>(null) }
 
 
             TutorApp1Theme {
-
                 when {
                     loggedInUid != null -> {
                         HomeScreen(
@@ -70,7 +69,6 @@ class MainActivity : ComponentActivity() {
                                 showSignUp = false
                             }
                         )
-
 //                        NotesList(
 //                            userName = loggedInUid!!,
 //                            onLogout = { loggedInUid = null }
