@@ -126,13 +126,9 @@ fun NotesList(
                     .padding(8.dp)
             ) {
                 Column {
-                    Card(
-                        modifier = Modifier
-                            .background(AppColors.Surface)
-                            .padding(8.dp)
-                            // .clip(RoundedCornerShape(0.dp))
-                            .fillMaxWidth()
-                    ) {
+                    Row (
+                        Modifier.align(Alignment.End)
+                    ) { // Logout Btn on Home
                         Button(onClick = {
                             FirebaseAuth.getInstance().signOut()
                             Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
@@ -140,6 +136,15 @@ fun NotesList(
                         }) {
                             Text("Logout")
                         }
+                    } // Logout Btn on Home
+
+                    Card(
+                        modifier = Modifier
+                            .background(AppColors.Surface)
+                            .padding(8.dp)
+                            // .clip(RoundedCornerShape(0.dp))
+                            .fillMaxWidth()
+                    ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly
@@ -225,12 +230,12 @@ fun NotesList(
                     }
 
                     // UI
-                    notesList.forEach { note ->
+                    notesList.forEach { note -> //notesList.forEach
                         Box(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .background(Color(0xFFE8E8E8))
-                        ) {
+                        ) {//notesList
                             Column {
                                 Card(
                                     modifier = Modifier
@@ -282,12 +287,10 @@ fun NotesList(
                                     }
                                 }
                             }
-                        }
-                    }
+                        } //notesList
+                    } //notesList.forEach
                 }
             }
         }
     }
 }
-
-
