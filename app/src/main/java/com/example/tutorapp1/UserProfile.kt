@@ -19,6 +19,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +74,7 @@ fun ProfileDesign(){
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    ) { //User Details
                         TextWithIcon(
                             iconValue = Icons.Filled.Info,
                             labelValue = "User Details"
@@ -81,7 +82,7 @@ fun ProfileDesign(){
                         TextAfterIcon(
                             NormalText = "User Details"
                         )
-                    }
+                    }//User Details
 
                     Card (
                         modifier = Modifier
@@ -133,6 +134,19 @@ fun ProfileDesign(){
                             )
                         }
                     } // Phone Number card
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) { //Your Notes
+                        TextWithIcon(
+                            iconValue = Icons.Filled.Notes,
+                            labelValue = "Your Notes"
+                        )
+                        TextAfterIcon(
+                            NormalText = "Your Notes"
+                        )
+                    }//Your Notes
+
                 }
             }
         }
