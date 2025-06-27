@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
             var showSignUp by remember { mutableStateOf(true) }
             var loggedInEmail by remember { mutableStateOf<String?>(null) }
 
-
             TutorApp1Theme {
 
                 when {
