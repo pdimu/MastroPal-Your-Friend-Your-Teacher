@@ -74,7 +74,7 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .padding(24.dp)
-               // .border(2.dp, Color.Black, RoundedCornerShape(0.dp))
+                // .border(2.dp, Color.Black, RoundedCornerShape(0.dp))
                 .shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(8.dp),
@@ -91,19 +91,19 @@ fun LoginScreen(
                     .fillMaxWidth()
                     //.clip(RoundedCornerShape(0.dp))
                     .padding(16.dp),
-                   // .border(2.dp, Color.Red, RoundedCornerShape(0.dp)),
+                // .border(2.dp, Color.Red, RoundedCornerShape(0.dp)),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFBFFFA6)),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 12.dp,
-                hoveredElevation = 12.dp,
-            )
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 12.dp,
+                    hoveredElevation = 12.dp,
+                )
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         // .background(Color(0xFFFFA6DB)) // Your desired color here
                         .padding(12.dp)
-                       // .border(2.dp, Color.Cyan, RoundedCornerShape(12.dp)),
+                        // .border(2.dp, Color.Cyan, RoundedCornerShape(12.dp)),
                         .clip(RoundedCornerShape(32.dp))
                 ) {
                     Column(
@@ -254,7 +254,7 @@ fun LoginScreen(
 
                             IconButton(
                                 onClick = {""},
-                                 modifier = Modifier.border(1.dp, AppColors.TextFieldFocusedBorder, RoundedCornerShape(12.dp))
+                                modifier = Modifier.border(1.dp, AppColors.TextFieldFocusedBorder, RoundedCornerShape(12.dp))
                             ) {
                                 Icon(Icons.Filled.Email, contentDescription="")
                             }
@@ -273,7 +273,7 @@ fun LoginScreen(
                             onClick = {onSwitchToSignUp()},
                             modifier = Modifier
                                 .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
-                            ) {
+                        ) {
                             Text(
                                 text = "Learn New Things with, SIGN UP!",
                                 textDecoration = TextDecoration.Underline,

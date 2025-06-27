@@ -71,7 +71,7 @@ fun SignUp(
         modifier = Modifier
             .fillMaxSize()
             .background(AppColors.Background)
-           // .border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+            // .border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
             .padding(16.dp),
     ) {
         Column (
@@ -83,153 +83,153 @@ fun SignUp(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-           Box(
-               modifier = Modifier
-                   .padding(16.dp)
-                   .background(AppColors.OnError)
-                   //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
-           ){
-               Column (
-                   modifier = Modifier
-                       .padding(8.dp)
-                       //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
-               ) {
-                   val interactionSource = remember { MutableInteractionSource() }
-                   val isFocused by interactionSource.collectIsFocusedAsState()
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(AppColors.OnError)
+                //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+            ){
+                Column (
+                    modifier = Modifier
+                        .padding(8.dp)
+                    //.border(1.dp, AppColors.Placeholder, RoundedCornerShape(12.dp))
+                ) {
+                    val interactionSource = remember { MutableInteractionSource() }
+                    val isFocused by interactionSource.collectIsFocusedAsState()
 
-                   CallNormalTextFieldText(NormalText = "Email")
+                    CallNormalTextFieldText(NormalText = "Email")
 
-                   OutlinedTextField(
-                       value = emailEntered.value,
-                       onValueChange = { emailEntered.value = it },
-                       placeholder = {Text(text = "Enter email")},
-                       colors = OutlinedTextFieldDefaults.colors(
-                           focusedBorderColor = AppColors.TextFieldFocusedBorder,
-                           unfocusedBorderColor = AppColors.TextFieldColorsBorder,
-                           cursorColor = AppColors.TextFieldCursor,
-                           focusedLabelColor = AppColors.TextFieldFocusedBorder,
-                           unfocusedLabelColor = Color.Gray,
-                           focusedPlaceholderColor = AppColors.Placeholder,
-                           unfocusedPlaceholderColor = Color.LightGray
-                       ),
-                       keyboardOptions = KeyboardOptions.Default,
+                    OutlinedTextField(
+                        value = emailEntered.value,
+                        onValueChange = { emailEntered.value = it },
+                        placeholder = {Text(text = "Enter email")},
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AppColors.TextFieldFocusedBorder,
+                            unfocusedBorderColor = AppColors.TextFieldColorsBorder,
+                            cursorColor = AppColors.TextFieldCursor,
+                            focusedLabelColor = AppColors.TextFieldFocusedBorder,
+                            unfocusedLabelColor = Color.Gray,
+                            focusedPlaceholderColor = AppColors.Placeholder,
+                            unfocusedPlaceholderColor = Color.LightGray
+                        ),
+                        keyboardOptions = KeyboardOptions.Default,
 
-                       leadingIcon = {
-                           Icon(
-                               imageVector = if (isFocused) Icons.Filled.AccountCircle else Icons.Outlined.AccountCircle,
-                               contentDescription = "labelValue"
-                           )
-                       },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = if (isFocused) Icons.Filled.AccountCircle else Icons.Outlined.AccountCircle,
+                                contentDescription = "labelValue"
+                            )
+                        },
 
-                       modifier = Modifier
-                           .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
-                           .clip(RoundedCornerShape(4.dp))
-                           .fillMaxWidth()
-                   )
+                        modifier = Modifier
+                            .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .fillMaxWidth()
+                    )
 
-                   CallNormalTextFieldText(NormalText = "Password")
+                    CallNormalTextFieldText(NormalText = "Password")
 
 
-                   OutlinedTextField(
-                       value = passwordEntered.value,
-                       onValueChange = { passwordEntered.value = it },
-                       placeholder = {Text(text = "Enter Password")},
-                       colors = OutlinedTextFieldDefaults.colors(
-                           focusedBorderColor = AppColors.TextFieldFocusedBorder,
-                           unfocusedBorderColor = AppColors.TextFieldColorsBorder,
-                           cursorColor = AppColors.TextFieldCursor,
-                           focusedLabelColor = AppColors.TextFieldFocusedBorder,
-                           unfocusedLabelColor = Color.Gray,
-                           focusedPlaceholderColor = AppColors.Placeholder,
-                           unfocusedPlaceholderColor = Color.LightGray
-                       ),
-                       visualTransformation = PasswordVisualTransformation(),
-                       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    OutlinedTextField(
+                        value = passwordEntered.value,
+                        onValueChange = { passwordEntered.value = it },
+                        placeholder = {Text(text = "Enter Password")},
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AppColors.TextFieldFocusedBorder,
+                            unfocusedBorderColor = AppColors.TextFieldColorsBorder,
+                            cursorColor = AppColors.TextFieldCursor,
+                            focusedLabelColor = AppColors.TextFieldFocusedBorder,
+                            unfocusedLabelColor = Color.Gray,
+                            focusedPlaceholderColor = AppColors.Placeholder,
+                            unfocusedPlaceholderColor = Color.LightGray
+                        ),
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
 
-                       leadingIcon = {
-                           Icon(
-                               imageVector = if (isFocused) Icons.Filled.Lock else Icons.Outlined.Lock,
-                               contentDescription = ""
-                           )
-                       },
-                       interactionSource = interactionSource,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = if (isFocused) Icons.Filled.Lock else Icons.Outlined.Lock,
+                                contentDescription = ""
+                            )
+                        },
+                        interactionSource = interactionSource,
 
-                       modifier = Modifier
-                           .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
-                           .clip(RoundedCornerShape(4.dp))
-                           .fillMaxWidth()
-                   )
+                        modifier = Modifier
+                            .padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .fillMaxWidth()
+                    )
 
-                   Row (
-                       horizontalArrangement = Arrangement.SpaceBetween
-                   ){
-                       Button(
-                           onClick = {
-                               val email = emailEntered.value.trim()
-                               val password = passwordEntered.value.trim()
+                    Row (
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Button(
+                            onClick = {
+                                val email = emailEntered.value.trim()
+                                val password = passwordEntered.value.trim()
 
-                               if(email.isNotEmpty() && password.isNotEmpty()) {
-                                   auth.createUserWithEmailAndPassword(email, password)
-                                       .addOnCompleteListener { task ->
-                                           if (task.isSuccessful) {
-                                               val uid = auth.currentUser?.uid ?: ""
-                                               FirebaseDatabase.getInstance().reference
-                                                   .child("Users")
-                                                   .child(uid)
-                                                   .setValue(mapOf("email" to email))
-                                               onSignUpSuccess(email)
-                                           } else {
-                                               Toast.makeText(context, task.exception?.message ?: "Error occurred", Toast.LENGTH_SHORT).show()
-                                           }
-                                       }
-                               } else {
-                                   Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
-                               }
-                           },
-                           modifier = Modifier
-                               .weight(1f)
-                               .padding(8.dp),
-                           shape = RoundedCornerShape(8.dp),
-                           colors = ButtonDefaults.buttonColors(
-                               containerColor = AppColors.Primary, // Gray background
-                               contentColor = AppColors.Background // Text color
-                           )
-                       ){
-                           Text(
-                               text = "Sign Up".uppercase(),
-                               textAlign = TextAlign.Center,
-                               modifier = Modifier
-                                   .padding(16.dp, 8.dp)
-                                   .fillMaxWidth()
-                           )
-                       }
-                       Button(
-                           onClick = {},
-                           modifier = Modifier
-                               .weight(1f)
-                               .padding(8.dp),
-                           shape = RoundedCornerShape(8.dp),
-                           colors = ButtonDefaults.buttonColors(
-                               containerColor = Color.LightGray, // Gray background
-                               contentColor = AppColors.Background // Text color
-                           )
-                       ) {
-                           Text(
-                               text = "Cancel".uppercase(),
-                               textAlign = TextAlign.Center,
-                               color = AppColors.White,
-                               modifier = Modifier
-                                   .padding(16.dp, 8.dp)
-                                   .fillMaxWidth()
-                           )
-                       }
-                   }
+                                if(email.isNotEmpty() && password.isNotEmpty()) {
+                                    auth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                val uid = auth.currentUser?.uid ?: ""
+                                                FirebaseDatabase.getInstance().reference
+                                                    .child("Users")
+                                                    .child(uid)
+                                                    .setValue(mapOf("email" to email))
+                                                onSignUpSuccess(email)
+                                            } else {
+                                                Toast.makeText(context, task.exception?.message ?: "Error occurred", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                } else {
+                                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppColors.Primary, // Gray background
+                                contentColor = AppColors.Background // Text color
+                            )
+                        ){
+                            Text(
+                                text = "Sign Up".uppercase(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(16.dp, 8.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
+                        Button(
+                            onClick = {},
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.LightGray, // Gray background
+                                contentColor = AppColors.Background // Text color
+                            )
+                        ) {
+                            Text(
+                                text = "Cancel".uppercase(),
+                                textAlign = TextAlign.Center,
+                                color = AppColors.White,
+                                modifier = Modifier
+                                    .padding(16.dp, 8.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
+                    }
 
-                   TextButton(onClick = onSwitchToLogin) {
-                       Text("Already have an account? Login")
-                   }
-               }
-           }
+                    TextButton(onClick = onSwitchToLogin) {
+                        Text("Already have an account? Login")
+                    }
+                }
+            }
         }
     }
 }
@@ -260,7 +260,7 @@ fun CallNormalTextField(
     labelValue: String,
     placeHolderValue: String,
     interactionSource: MutableInteractionSource
-    ){
+){
 
     val emailEntered = remember { mutableStateOf("") }
 

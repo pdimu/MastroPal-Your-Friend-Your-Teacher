@@ -56,15 +56,10 @@ fun UserProfile(userEmail: String) {
                 color = Color.Gray
             )
         }
-
-        NotesList(
-            userName = userEmail,
-            onLogout = { }
-        )
     }
 }
 
-@Preview
+
 @Composable
 fun ProfileDesign(){
     Surface (
