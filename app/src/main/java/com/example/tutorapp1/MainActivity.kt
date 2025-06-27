@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
         val auth = FirebaseAuth.getInstance()
         Log.d("AUTH_CHECK", "Current user: ${auth.currentUser?.email}")
 
-
         enableEdgeToEdge()
         setContent {
             var loggedInUid by remember { mutableStateOf<String?>(null) }
