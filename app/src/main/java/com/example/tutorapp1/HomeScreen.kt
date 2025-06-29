@@ -199,8 +199,6 @@ fun HomeScreen(
 //            }
 //        }
 //    }
-
-
     ) {innerPadding ->
         HorizontalPager(
             count = 4,
