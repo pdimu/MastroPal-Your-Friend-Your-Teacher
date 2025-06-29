@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -66,6 +67,7 @@ fun SignUp(
 
     val emailEntered = remember { mutableStateOf("") }
     val passwordEntered = remember { mutableStateOf("") }
+    val phoneEntered = remember { mutableStateOf("") }
 
     Surface (
         modifier = Modifier
@@ -98,7 +100,6 @@ fun SignUp(
                     val isFocused by interactionSource.collectIsFocusedAsState()
 
                     CallNormalTextFieldText(NormalText = "Email")
-
                     OutlinedTextField(
                         value = emailEntered.value,
                         onValueChange = { emailEntered.value = it },
@@ -127,9 +128,32 @@ fun SignUp(
                             .fillMaxWidth()
                     )
 
+                    CallNormalTextFieldText(NormalText = "Phone Number")
+                    OutlinedTextField(
+                        value = phoneEntered.value,
+                        onValueChange = { phoneEntered.value = it },
+                        placeholder = { Text("Enter Phone Number") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = AppColors.TextFieldFocusedBorder,
+                            unfocusedBorderColor = AppColors.TextFieldColorsBorder,
+                            cursorColor = AppColors.TextFieldCursor,
+                            focusedPlaceholderColor = AppColors.Placeholder,
+                            unfocusedPlaceholderColor = Color.LightGray
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Phone,
+                                contentDescription = "Phone"
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .fillMaxWidth()
+                    )
+
                     CallNormalTextFieldText(NormalText = "Password")
-
-
                     OutlinedTextField(
                         value = passwordEntered.value,
                         onValueChange = { passwordEntered.value = it },
@@ -176,7 +200,12 @@ fun SignUp(
                                                 FirebaseDatabase.getInstance().reference
                                                     .child("Users")
                                                     .child(uid)
-                                                    .setValue(mapOf("email" to email))
+                                                    .setValue(
+                                                        mapOf(
+                                                        "email" to email,
+                                                        "phone" to phoneEntered.value
+                                                        )
+                                                    )
                                                 onSignUpSuccess(email)
                                             } else {
                                                 Toast.makeText(context, task.exception?.message ?: "Error occurred", Toast.LENGTH_SHORT).show()

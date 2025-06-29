@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -29,7 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +41,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun UserProfile(userEmail: String) {
+fun UserID(userEmail: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +64,7 @@ fun UserProfile(userEmail: String) {
 
 
 @Composable
-fun ProfileDesign(){
+fun UserProfile(userEmail: String, userPhone: String){
     Surface (
         modifier = Modifier
             .fillMaxSize()
@@ -71,6 +74,34 @@ fun ProfileDesign(){
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            Box {
+                Column (
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                                .padding(8.dp)
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.tuton_img),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(150.dp)
+                        )
+
+                        Text(
+                            text = "User Name",
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .padding(8.dp)
+                        )
+                    }
+
+                }
+            }
+
             Box {
                 Column (
                     modifier = Modifier
@@ -104,7 +135,7 @@ fun ProfileDesign(){
                                 modifier = Modifier.padding(start = 16.dp, bottom = 2.dp, top = 8.dp, end = 8.dp)
                             )
                             Text(
-                                text = "useremail@gmail.com",
+                                text = userEmail,
                                 fontSize = 16.sp,
                                 style = MaterialTheme.typography.body1,
                                 color = Color.Black,
@@ -130,7 +161,7 @@ fun ProfileDesign(){
                             )
 
                             Text(
-                                text = "1234567890",
+                                text = userPhone,
                                 fontSize = 16.sp,
                                 style = MaterialTheme.typography.body1,
                                 color = Color.Black,

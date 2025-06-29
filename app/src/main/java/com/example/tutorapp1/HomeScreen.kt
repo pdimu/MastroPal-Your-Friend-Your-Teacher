@@ -91,12 +91,13 @@ fun HomeScreen(
     userEmail: String,
     onLogout: () -> Unit
 ){
-
     val navController = rememberNavController()
     var selected by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(initialPage = selected) // Sync with pager
     val coroutineScope = rememberCoroutineScope()
     var isInsideSubpage by remember { mutableStateOf(false) }
+
+    var userPhone by remember { mutableStateOf("") }
 
     // Track whether to reset Categories navigation
     var resetCategories by remember { mutableStateOf(false) }
@@ -214,7 +215,7 @@ fun HomeScreen(
                 0 -> Column (
                     verticalArrangement = Arrangement.SpaceEvenly
                 ){
-                    UserProfile(userEmail = userEmail)
+                    UserID(userEmail = userEmail)
                     NotesList(
                         userName = userId,
                         onLogout = { onLogout() }
@@ -224,8 +225,15 @@ fun HomeScreen(
                     userName = userId,
                     onLogout = { onLogout() }
                 )
-                2 -> SearchScreen()
-                3 -> UserProfile(userEmail = userEmail)
+                2 -> UserDetailFetcher(
+                    userId = userId,
+                    content = { email, phone ->
+                        userPhone = phone
+                        UserDetailCard(userEmail = userEmail, userPhone = phone)
+                    }
+                )
+                    //SearchScreen()
+                3 -> UserProfile(userEmail = userEmail, userPhone = userPhone.takeIf { it.isNotEmpty() } ?: "Not Available")
             }
         }
 
@@ -241,6 +249,17 @@ fun HomeScreen(
     }
 }
 
+@Composable
+fun UserDetailCard(userEmail: String, userPhone: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text("User Email: $userEmail")
+        Text("User Phone: ${if (userPhone.isBlank()) "Not Available" else userPhone}")
+    }
+}
 
 @Composable
 fun CreateButton(onClick: () -> Unit){
@@ -398,7 +417,13 @@ val BottomAppBarItem = listOf(
         badges = 0,
     ),
 
-
+//    BottomNavItems(
+//        title = "Info",
+//        route = "info",
+//        selectedIcon = Icons.Filled.Info,
+//        unselectedIcon = Icons.Outlined.Info,
+//        badges = 0,
+//    ),
     )
 
 
@@ -534,7 +559,7 @@ fun HomeScreen1(
                 0 -> Column (
                     verticalArrangement = Arrangement.SpaceEvenly
                 ){
-                    UserProfile(userEmail = userEmail)
+                    UserID(userEmail = userEmail)
                     NotesList(
                         userName = userId,
                         onLogout = { onLogout() }
@@ -545,7 +570,7 @@ fun HomeScreen1(
                     onLogout = { onLogout() }
                 )
                 2 -> SearchScreen()
-                3 -> UserProfile(userEmail = userEmail)
+              //  3 -> UserProfile(userEmail = userEmail)
             }
         }
 
