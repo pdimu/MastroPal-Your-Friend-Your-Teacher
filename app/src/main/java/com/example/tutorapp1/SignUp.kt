@@ -203,10 +203,10 @@ fun SignUp(
                                                     .setValue(
                                                         mapOf(
                                                         "email" to email,
-                                                        "phone" to phoneEntered.value
+                                                        "phone" to phoneEntered.value,
                                                         )
                                                     )
-                                                onSignUpSuccess(email)
+                                                onSignUpSuccess(uid)
                                             } else {
                                                 Toast.makeText(context, task.exception?.message ?: "Error occurred", Toast.LENGTH_SHORT).show()
                                             }

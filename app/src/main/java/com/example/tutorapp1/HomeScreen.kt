@@ -98,6 +98,7 @@ fun HomeScreen(
     var isInsideSubpage by remember { mutableStateOf(false) }
 
     var userPhone by remember { mutableStateOf("") }
+    var passwordEntered by remember { mutableStateOf("") }
 
     // Track whether to reset Categories navigation
     var resetCategories by remember { mutableStateOf(false) }
@@ -223,13 +224,16 @@ fun HomeScreen(
                     userName = userId,
                     onLogout = { onLogout() }
                 )
-                2 -> UserDetailFetcher(
-                    userId = userId,
-                    content = { email, phone ->
-                        userPhone = phone
-                        UserDetailCard(userEmail = userEmail, userPhone = phone)
-                    }
-                )
+                2 -> Column {
+                    UserDetailFetcher(
+                        userId = userId,
+                        content = { email, phone ->
+                            userPhone = phone
+                            UserDetailCard(userEmail = userEmail, userPhone = phone)
+                        }
+                    )
+                    UserUID(userId = userId)
+                }
                     //SearchScreen()
                 3 -> UserProfile(userEmail = userEmail, userPhone = userPhone.takeIf { it.isNotEmpty() } ?: "Not Available")
             }
