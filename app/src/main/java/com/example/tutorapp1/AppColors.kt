@@ -10,12 +10,12 @@ object AppColors{
     val PrimaryVariant = Color(0xFF3700B3)
     val Secondary = Color(0xFF03DAC6)
     val Background = Color(0xFFFFFFFF)
-    val Surface = Color(0xFFFFFFFF)
+    val Surface = Color(0xFFF1F1F1)
     val Error = Color(0xFF404040)
     val OnPrimary = Color.White
     val OnSecondary = Color.Black
     val OnBackground = Color.Black
-    val OnSurface = Color.Black
+    val OnSurface = Color(0xFFF8F8F8)
     val OnError = Color.White
 
     //Regular colors

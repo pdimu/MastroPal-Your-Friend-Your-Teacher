@@ -132,7 +132,7 @@ fun NotesList(
                         Button(onClick = {
                             FirebaseAuth.getInstance().signOut()
                             Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
-                            onLogout() // ✅ notify MainActivity
+                            onLogout() // notify MainActivity
                         }) {
                             Text("Logout")
                         }
