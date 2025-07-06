@@ -235,7 +235,9 @@ fun HomeScreen(
                     UserUID(userId = userId)
                 }
                     //SearchScreen()
-                3 -> UserProfile(userEmail = userEmail, userPhone = userPhone.takeIf { it.isNotEmpty() } ?: "Not Available")
+                3 -> UserProfile(
+                    userEmail = userEmail, userPhone = userPhone.takeIf { it.isNotEmpty() } ?: "Not Available"
+                )
             }
         }
 
