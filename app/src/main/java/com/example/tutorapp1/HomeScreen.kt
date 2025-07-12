@@ -317,7 +317,7 @@ fun CreateButton(onClick: () -> Unit){
     FloatingActionButton(
         onClick = { onClick() }
     ) {
-        Icon(Icons.Filled.Create, "")
+        Icon(Icons.Filled.Add, "")
     }
 }
 

@@ -126,17 +126,17 @@ fun NotesList(
                     .padding(8.dp)
             ) {
                 Column {
-                    Row (
-                        Modifier.align(Alignment.End)
-                    ) { // Logout Btn on Home
-                        Button(onClick = {
-                            FirebaseAuth.getInstance().signOut()
-                            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
-                            onLogout() // notify MainActivity
-                        }) {
-                            Text("Logout")
-                        }
-                    } // Logout Btn on Home
+//                    Row (
+//                        Modifier.align(Alignment.End)
+//                    ) { // Logout Btn on Notes
+//                        Button(onClick = {
+//                            FirebaseAuth.getInstance().signOut()
+//                            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+//                            onLogout() // notify MainActivity
+//                        }) {
+//                            Text("Logout")
+//                        }
+//                    } // Logout Btn on Notes
 
                     Card(
                         modifier = Modifier
@@ -151,7 +151,7 @@ fun NotesList(
                         ) {
 
                             Text(
-                                text = "Card",
+                                text = "Enter Your Notes",
                                 modifier = Modifier
                                     //   .background(AppColors.Primary)
                                     .padding(8.dp)
@@ -165,27 +165,27 @@ fun NotesList(
                                 ) {
                                     Icon(Icons.Filled.MoreVert, contentDescription = "More")
                                 }
-                                DropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false },
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text("Edit") },
-                                        onClick = {
-                                            Toast.makeText(context, "Load", Toast.LENGTH_SHORT)
-                                                .show()
-                                        }
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text("Delete") },
-                                        onClick = {
-                                            Toast.makeText(context, "Save", Toast.LENGTH_SHORT)
-                                                .show()
-                                        }
-                                    )
-                                }
+//                                DropdownMenu(
+//                                    expanded = expanded,
+//                                    onDismissRequest = { expanded = false },
+//                                    modifier = Modifier
+//                                        .align(Alignment.TopEnd)
+//                                ) {
+//                                    DropdownMenuItem(
+//                                        text = { Text("Edit") },
+//                                        onClick = {
+//                                            Toast.makeText(context, "Load", Toast.LENGTH_SHORT)
+//                                                .show()
+//                                        }
+//                                    )
+//                                    DropdownMenuItem(
+//                                        text = { Text("Delete") },
+//                                        onClick = {
+//                                            Toast.makeText(context, "Save", Toast.LENGTH_SHORT)
+//                                                .show()
+//                                        }
+//                                    )
+//                                }
                             }
                         }
 
@@ -213,11 +213,10 @@ fun NotesList(
                         {
                             Button(
                                 onClick = {
-                                    //   val notesRef = database.reference.child("Notes List")
-                                    //val notes = notesRef.child(NotesEntered)
-//                                notesRef.setValue(NotesEntered.value)
+//                                    val notesRef = database.reference.child("Notes List")
+//                                    val notes = notesRef.child(NotesEntered)
+//                                    notesRef.setValue(NotesEntered.value)
                                     notesRef.push().setValue(NotesEntered.value)
-
                                     NotesEntered.value = ""
                                     Toast.makeText(context, "Notes Saved", Toast.LENGTH_LONG).show()
                                 }
@@ -274,16 +273,39 @@ fun NotesList(
                                         )
                                 ) {
                                     Text(
-                                        text = "note id",
+                                        text = "Note",
                                         modifier = Modifier
                                             //.fillMaxWidth()
                                             .padding(vertical = 8.dp, horizontal = 8.dp)
                                     )
 
-                                    IconButton(
-                                        onClick = { }
-                                    ) {
-                                        Icon(Icons.Filled.Create, contentDescription = "More")
+                                    Box(){
+                                        IconButton(
+                                            onClick = { expanded = true }
+                                        ) {
+                                            Icon(Icons.Filled.Create, contentDescription = "Edit")
+                                        }
+                                        DropdownMenu(
+                                            expanded = expanded,
+                                            onDismissRequest = { expanded = false },
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
+                                        ) {
+                                            DropdownMenuItem(
+                                                text = { Text("Edit") },
+                                                onClick = {
+                                                    Toast.makeText(context, "Load", Toast.LENGTH_SHORT)
+                                                        .show()
+                                                }
+                                            )
+                                            DropdownMenuItem(
+                                                text = { Text("Delete") },
+                                                onClick = {
+                                                    Toast.makeText(context, "Save", Toast.LENGTH_SHORT)
+                                                        .show()
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }

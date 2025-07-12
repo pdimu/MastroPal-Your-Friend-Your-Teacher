@@ -27,7 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.example.tutorapp1.ui.theme.TutorApp1Theme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -35,20 +39,39 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+//
+//        //  TEST DB WRITE
+//        FirebaseDatabase.getInstance().reference
+//            .child("connection_test")
+//            .setValue("Connected! + 2")
+//            .addOnSuccessListener {
+//                Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
+//            }
+//            .addOnFailureListener {
+//                Log.e("FirebaseCheck", "❌ Firebase write failed: ${it.message}")
+//            }
+//
+//        val auth = FirebaseAuth.getInstance()
+//        Log.d("AUTH_CHECK", "Current user: ${auth.currentUser?.email}")
 
-        //  TEST DB WRITE
-        FirebaseDatabase.getInstance().reference
-            .child("connection_test")
-            .setValue("Connected! + 1")
-            .addOnSuccessListener {
-                Log.d("FirebaseCheck", "✅ Firebase connected and write successful")
-            }
-            .addOnFailureListener {
-                Log.e("FirebaseCheck", "❌ Firebase write failed: ${it.message}")
+        val dbRef = FirebaseDatabase.getInstance().reference.child("connection_test")
+
+        dbRef.runTransaction(object : Transaction.Handler {
+            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                val current = currentData.getValue(Int::class.java) ?: 0
+                currentData.value = current + 1
+                return Transaction.success(currentData)
             }
 
-        val auth = FirebaseAuth.getInstance()
-        Log.d("AUTH_CHECK", "Current user: ${auth.currentUser?.email}")
+            override fun onComplete(error: DatabaseError?, committed: Boolean, currentData: DataSnapshot?) {
+                if (error != null) {
+                    Log.e("FirebaseCheck", "❌ Transaction failed: ${error.message}")
+                } else {
+                    Log.d("FirebaseCheck", "✅ Connection count updated: ${currentData?.value}")
+                }
+            }
+        })
+
 
         enableEdgeToEdge()
         setContent {
