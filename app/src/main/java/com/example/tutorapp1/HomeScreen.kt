@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.tutorapp1
 
 
@@ -79,13 +81,20 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+
+import androidx.compose.foundation.layout.WindowInsets
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.BottomNavigationDefaults.windowInsets
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,22 +123,28 @@ fun HomeScreen(
 
     var menuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var showInfoSheet by remember { mutableStateOf(false) }
 
     Scaffold (
         topBar = {
             TopAppBar(
                 title = { Text("Tutor App") },
                 actions = {
+                    IconButton(onClick = {showInfoSheet = true}) {
+                        Icon(Icons.Default.Info, contentDescription = "")
+                    }
                     IconButton(onClick = {menuExpanded = true}) {
                         Icon(Icons.Default.MoreVert, contentDescription = "")
                     }
-
                     TopBarDropDown(
                         expanded = menuExpanded,
                         onDismissRequest = {menuExpanded = false},
                         onItemClick = {item ->
                             when (item){
-                                "Info" -> Toast.makeText(context,"Info Clicked", Toast.LENGTH_LONG).show()
+                                "Info" -> {
+                                    showInfoSheet = true
+                                    //Toast.makeText(context,"Info Clicked", Toast.LENGTH_LONG).show()
+                                }
                                 "Settings" -> Toast.makeText(context, "Settings Clicked", Toast.LENGTH_LONG).show()
                                 "Logout" -> {
                                     FirebaseAuth.getInstance().signOut()
@@ -267,6 +282,10 @@ fun HomeScreen(
                     userEmail = userEmail, userPhone = userPhone.takeIf { it.isNotEmpty() } ?: "Not Available"
                 )
             }
+        }
+
+        if (showInfoSheet) {
+            InfoBottomSheet(onDismiss = { showInfoSheet = false })
         }
 
 //        Column(
@@ -503,8 +522,74 @@ fun TopBarDropDown(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InfoBottomSheet(onDismiss: () -> Unit){
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+            ModalBottomSheet(
+                onDismissRequest = onDismiss,
+                sheetState = sheetState,
+               // windowInsets = BottomSheetDefaults.windowInsets,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 400.dp) // ~quarter screen height initially
+            ) {
+                Column (modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+                    Column {
+                        Text("App Info", style = MaterialTheme.typography.titleLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Hi, This is Mastro Pal Mobile App, this is help to see friend to friends learning and teaching app",)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Column (
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(8.dp),
+                    ) {
+                        TextButton(onClick = onDismiss) {
+                            Text("Close")
+                        }
+                    }
+                }
+            }
+    }
 
+// var showBottomSheet by remember {mutableStateOf(false)}
+//var sheetState = rememberModalBottomSheetState { false }
+//    Column(
+//        modifier = Modifier.fillMaxWidth(),
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//    ) {
+//        Button(
+//            onClick = { showBottomSheet = true }
+//        ) {
+//            Text("Display partial bottom sheet")
+//        }
+//
+//        if (showBottomSheet) {
+//            ModalBottomSheet(
+//                onDismissRequest = onDismiss,
+//                modifier = Modifier.fillMaxHeight(),
+//                sheetState = sheetState,
+//            ) {
+//            Column (modifier = Modifier.padding(16.dp)) {
+//                Text("App Info", style = MaterialTheme.typography.titleLarge)
+//                Text("Hi, This is Mastro Pal Mobile App, this is help to see friend to friends learning and teaching app",)
+//
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Button(onClick = onDismiss) {
+//                    Text("Close")
+//                }
+//            }
+//            }
+//        }
+//    }
+}
 
 
 

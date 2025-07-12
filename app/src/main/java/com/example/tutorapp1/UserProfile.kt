@@ -302,8 +302,8 @@ fun UserProfile(
                         }
                     }
 
+                } // end
 
-                }
 
             }
         }
