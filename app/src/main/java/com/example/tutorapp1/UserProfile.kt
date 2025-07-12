@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -164,7 +165,7 @@ fun UserProfile(
                             defaultElevation = 4.dp,
                         ),
                         colors = CardDefaults.cardColors(
-                            containerColor = AppColors.Surface
+                            containerColor = AppColors.Background
                         ),
                         modifier = Modifier
                             .padding(8.dp)
@@ -206,7 +207,7 @@ fun UserProfile(
                             defaultElevation = 4.dp,
                         ),
                         colors = CardDefaults.cardColors(
-                            containerColor = AppColors.Surface
+                            containerColor = AppColors.Background
                         ),
                         modifier = Modifier
                             .padding(8.dp)
@@ -231,7 +232,8 @@ fun UserProfile(
                                 text = userPhone,
                                 fontSize = 16.sp,
                                 style = MaterialTheme.typography.body1,
-                                color = Color.Black,
+                                color = if(userPhone == "Not Available") AppColors.Placeholder else AppColors.Black,
+                                fontStyle = if (userPhone == "Not Available") FontStyle.Italic else FontStyle.Normal,
                                 modifier = Modifier.padding(
                                     start = 16.dp,
                                     bottom = 8.dp,

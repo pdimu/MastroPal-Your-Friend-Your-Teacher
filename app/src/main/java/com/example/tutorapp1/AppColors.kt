@@ -20,7 +20,7 @@ object AppColors{
 
     //Regular colors
     val White = Color(0xFFFFFFFF)
-
+    val Black = Color(0xFF000000)
     // Custom colors
     val TextFieldFocusedBorder = Color(0xFF4CAF50)
     val TextFieldCursor = Color(0xFF388E3C)

@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.R.attr.contentDescription
 import android.util.Log
+import android.widget.Toast
 import androidx.benchmark.perfetto.ExperimentalPerfettoTraceProcessorApi
 import androidx.benchmark.perfetto.Row
 import androidx.compose.foundation.background
@@ -83,6 +84,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.DpOffset
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,12 +112,36 @@ fun HomeScreen(
         selected = pagerState.currentPage
     }
 
+    var menuExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     Scaffold (
         topBar = {
             TopAppBar(
                 title = { Text("Tutor App") },
+                actions = {
+                    IconButton(onClick = {menuExpanded = true}) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "")
+                    }
+
+                    TopBarDropDown(
+                        expanded = menuExpanded,
+                        onDismissRequest = {menuExpanded = false},
+                        onItemClick = {item ->
+                            when (item){
+                                "Info" -> Toast.makeText(context,"Info Clicked", Toast.LENGTH_LONG).show()
+                                "Settings" -> Toast.makeText(context, "Settings Clicked", Toast.LENGTH_LONG).show()
+                                "Logout" -> {
+                                    FirebaseAuth.getInstance().signOut()
+                                    Toast.makeText(context, "Account Logout", Toast.LENGTH_LONG).show()
+                                    onLogout()
+                                }
+                            }
+                        }
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.Surface
+                    containerColor = AppColors.Primary
                 )
             )
         },
@@ -429,6 +457,65 @@ val BottomAppBarItem = listOf(
 //        badges = 0,
 //    ),
     )
+
+
+@Composable
+fun TopBarDropDown(
+    expanded : Boolean,
+    onDismissRequest : () -> Unit,
+    onItemClick: (String) -> Unit
+){
+    // val context = LocalContext.current
+ //   var expanded by remember { mutableStateOf(false) }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        offset = DpOffset(x = (-24).dp, y = 0.dp)
+    ) {
+        DropdownMenuItem(
+            text = { Text("Info")},
+            onClick = {
+                onItemClick("Info")
+                onDismissRequest()
+                //Toast.makeText(context,"Info Clicked", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Settings")},
+            onClick = {
+                onItemClick("Settings")
+                onDismissRequest()
+                //Toast.makeText(context,"Settings Clicked", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Logout")},
+            onClick = {
+                onItemClick("Logout")
+                onDismissRequest()
+                //Toast.makeText(context,"Account Logout", Toast.LENGTH_LONG).show()
+            }
+        )
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
