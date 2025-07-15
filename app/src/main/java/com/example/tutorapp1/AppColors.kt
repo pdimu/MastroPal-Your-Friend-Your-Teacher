@@ -7,15 +7,18 @@ import androidx.compose.ui.graphics.Color
 
 object AppColors{
     val Primary = Color(0xFF4CAF50)
-    val PrimaryVariant = Color(0xFF3700B3)
+    val PrimaryVariant = Color(0xFFB18BFF)
     val Secondary = Color(0xFF03DAC6)
     val Background = Color(0xFFFFFFFF)
     val Surface = Color(0xFFF1F1F1)
+    val CardBG = Color(0xFFDBE2E8)
+    val SurfaceDark = Color(0xFFEFEFEF)
     val Error = Color(0xFF404040)
-    val OnPrimary = Color.White
+    val OnPrimary = Color(0xFFEFEFEF)
     val OnSecondary = Color.Black
     val OnBackground = Color.Black
     val OnSurface = Color(0xFFF8F8F8)
+    val OnSurfaceS = Color(0xFFF0F9FD)
     val OnError = Color.White
 
     //Regular colors
