@@ -24,9 +24,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-      
-    - name: Upload Beta APK
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: beta-apk
-          path: app/build/outputs/apk/beta/app-beta.apk
